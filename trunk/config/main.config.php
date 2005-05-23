@@ -42,5 +42,6 @@ define('__ALIEN_PLUGINSDIR', __ALIEN_PATH.'plugins/');
 define('__ALIEN_INTERFACESDIR', __ALIEN_PATH.'interfaces/');
 define('__ALIEN_LANGSDIR', __ALIEN_PATH.'langs/');
 define('__ALIEN_DATADIR', __ALIEN_PATH.'data/');
+define('__ALIEN_SESSPATH', __ALIEN_DATADIR.'sessions/');
 define('__ALIEN_LANGUAGE', 'Russian');
 ?>

@@ -11,20 +11,28 @@ class alien_system
 	var $document = NULL;
 	var $messageCenter = NULL;
 	var $data = NULL;
-	var $request;
+	var $request = array();
+	
 	
 	public function __construct()
 	{
 		
 		if(!$this->includeLangFiles()) die();
+		$this->getUser();
+		$this->document = $this->getDocument();
 		$this->messageCenter = $this->getMessageSystem();
 		$this->db = $this->getDBInterface();
-		$this->document = $this->getCurrentDocument();
-		//$this->db->query('error query');
 		$this->start();
 	}
 	
-	private function getCurrentDocument()
+	private function getUser()
+	{
+		include(__ALIEN_SYSTEMDIR.'libs/'.__ALIEN_USER.'/'.__ALIEN_USER.'.php');
+		$className = __ALIEN_USER;
+		return new $className(&$this);
+	}
+	
+	private function getDocument()
 	{
 		return NULL;
 	}
@@ -61,19 +69,56 @@ class alien_system
 	
 	function start()
 	{
+		$options = $this->getOptions();
+		$this->request = $options;
+		$this->getRequest();
+		$queue = $this->getQueue();
+		foreach($queue as $k=>$value)
+		{
+			if(!$this->isCached($value))
+			{
+				$this->data = $this->startPlugin($value);
+			} else $this->getCache($value);
+		} 
+	}
+	
+	function isCached($plugin_name)
+	{
+		if(!isset($this->request[0])||empty($this->request[0]))
+		{
+			$module = 'default';
+		} else $module = $this->request[0];
+		@include(__ALIEN_DATADIR.'cache/'.$module.'/cache.data.php');
+		if(isset($cache_data) && $cache_data[$plugin_name]['update']<=$cache_data[$plugin_name]['cache'])
+		{
+			return true;
+		} else return false;
+	}
+
+	function getCache($plugin_name)
+	{
+		if(!isset($this->request[0])||empty($this->request[0]))
+		{
+			$module = 'default';
+		} else $module = $this->request[0];
+		$content =file_get_contents(__ALIEN_DATADIR.'cache/'.$module.'/'.$plugin_name.'.html');
+		echo $content;
+	}
+	
+	function getRequest()
+	{
 		// Заглушка.
-		if(substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI'])-1,  strlen($_SERVER['REQUEST_URI'])) == '/')
+		if(array_key_exists('REDIRECT_URL', $_SERVER)){
+			$request = $_SERVER['REDIRECT_URL'];
+		} else {
+			$request = $_SERVER['REQUEST_URI'];
+		}
+		if(substr($request, -1, 1) == '/')
 		{
 			$i = 2;
 		} else $i = 1;
-		$request = substr($_SERVER['REQUEST_URI'], 1, strlen($_SERVER['REQUEST_URI'])-$i);
-		$this->request = explode('/', $request);
-		$this->data = &$_GET;
-		$queue = $this->getQueue();
-		foreach($queue as $value)
-		{
-			$this->data = $this->startPlugin($value);
-		} 
+		$request = substr($request, 1, strlen($request)-$i);
+		$this->request = array_merge($this->request, explode('/', $request));
 	}
 	
 	function stop()
@@ -89,12 +134,26 @@ class alien_system
 		} else $module = $this->request[0];
 		if(!@include(__ALIEN_DATADIR.'pages/'.$module.'.php'))
 		{
-			@include(__ALIEN_DATADIR.'pages/default.php');
+			$queue = array($this->request[0]);
 		} 
 		return $queue;
 	}
 	
 	/* Let's start plugining :) */
+	
+	function getOptions()
+	{
+		if(!isset($this->request[0])||empty($this->request[0]))
+		{
+			$module = 'default';
+		} else $module = $this->request[0];
+		if(!@include(__ALIEN_DATADIR.'pages/'.$module.'.php')||!isset($options))
+		{
+			$options = array();
+		} 
+		
+		return $options;
+	}
 	
 	protected function startPlugin($pluginData)
 	{

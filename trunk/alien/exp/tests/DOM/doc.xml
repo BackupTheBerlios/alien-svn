@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+ <section id="section1">
+  <phpvar>value1</phpvar>
+  <phpvar>value2</phpvar>
+ </section>
+ <section id="section2">
+  <phpvar>value3</phpvar>
+ </section>
+</config>

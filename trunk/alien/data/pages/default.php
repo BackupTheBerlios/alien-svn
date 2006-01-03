@@ -1,0 +1,5 @@
+<?PHP
+
+$queue = array('test');
+	
+?>

@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="yes" ?>
+<page>
+<head>
+<title>Alien.com::Test</title> 
+  </head>
+  <body>
+  <center>
+  <b>
+  <phpvar>test</phpvar>
+  </b>
+  </center>
+  <plugin name="quote" />
+  <plugin name="test" />
+  <link href="http://never-invited.com/alien/"><center><img src="/templates/alien/images/alien-powered.png" /></center></link>
+  </body>
+  </page>

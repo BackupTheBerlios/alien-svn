@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="yes" ?>
+<page>
+<head>
+<title>Alien.com::Debug</title> 
+  </head>
+  <body>
+  <center>
+  <phpvar>data</phpvar>
+  </center>
+  <link href="http://never-invited.com/alien/"><center><img src="/templates/alien/images/alien-powered.png" /></center></link>
+  </body>
+  </page>

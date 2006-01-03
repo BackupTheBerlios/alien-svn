@@ -1,5 +1,5 @@
 <?PHP
 
-$queue = array('alien_news');
+$queue = array('test');
 	
 ?>

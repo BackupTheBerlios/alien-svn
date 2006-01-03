@@ -1,24 +1,27 @@
 <?php
 
 include('constants.php');
-include(__ALIEN_INTERFACESDIR . "alien_db.php");
+include(__ALIEN_INTERFACESDIR . "/alien_db.php");
+include("result.php");
 
 class alien_mysql implements alien_db
 {
-	var $system = NULL;
-	var $link = NULL;
-	var $version = NULL;
-	var $usemysqli = FALSE;
-	var $lastError = NULL;
-	var $lastErrorNumber = NULL;
-	var $fetchMode = __ASSOCARRAY;
-	var $lastQuery = NULL;
-	var $arrFetchResType = NULL;
-	var $fetchFieldDirectFieldNr = NULL;
-	var $queryNum = 0;
-	var $connectNum = 0;
-	var $tablePrefix = __ALIEN_TABLEPREFIX;
-	var $haltOnError = TRUE;
+	private $system = NULL;
+	private $link = NULL;
+	private $version = NULL;
+	private $usemysqli = TRUE;
+	private $lastError = NULL;
+	private $lastErrorNumber = NULL;
+	private $fetchMode = __ASSOCARRAY;
+	private $lastQuery = NULL;
+	private $arrFetchResType = NULL;
+	private $fetchFieldDirectFieldNr = NULL;
+	private $queryNum = 0;
+	private $connectNum = 0;
+	private $tablePrefix = __ALIEN_TABLEPREFIX;
+	private $haltOnError = TRUE;
+	private $fetchModes = array(__ARRAY, __ASSOCARRAY, __FIELDDIRECT, __FIELD, __FIELDS, __LENGTHS, __OBJECT, __ROW);
+	private $usePersistentConnections = false;		
 	
 	public function __construct(&$system)
 	{
@@ -107,11 +110,7 @@ class alien_mysql implements alien_db
 		return $this->lastErrorNumber;
 	}
 	
-	public function factory()
-	{
-		return new self(&$this->system);
-	}
-	
+		
 	public function disconnect()
 	{
 		if(!$usemysqli)
@@ -185,6 +184,29 @@ class alien_mysql implements alien_db
 			return mysql_affected_rows($this->link);
 		}
 	}
+   /*
+    *  Adds a prefix to the table name specified.
+	*  If the table name is empty this function returns an empty string, not prefix.
+	*  To get a prefix, use getPrefix() function.
+	*/
+	public function addPrefix($table_name)
+	{
+		if(empty($table_name))
+		{
+			return "";
+		} else {
+			return $this->tablePrefix.strval($table_name);
+		}
+	}
+	
+	/*
+	 * Returns the table name prefix.
+	 */
+	
+	public function getPrefix()
+	{
+		return strval($this->tablePrefix);
+	}
 	
 	public function getConnectionLink()
 	{
@@ -206,7 +228,7 @@ class alien_mysql implements alien_db
 	public function getModuleInfo()
 	{
 		$moduleInfo = array(
-	'version' => '0.2.1',
+	'version' => '0.2.2a',
 	'developmentStatus' => 'in-development',
 	'site' => 'http://www.never-invited.com/alien/modules/alien_mysql/',
 	'update' => 'http://update.never-invited.com:2331/alien_mysql',
@@ -221,7 +243,6 @@ class alien_mysql implements alien_db
 	{
 		if($this->usemysqli)
 		{
-			//$queryString=mysqli_real_escape_string ($this->link, $queryString);
 			$this->lastQuery=mysqli_query($this->link, $queryString);
 			$this->queryNum++;
 			if(!$this->lastQuery)
@@ -229,7 +250,6 @@ class alien_mysql implements alien_db
 				$this->error();
 			}
 		} else {
-			//$queryString=mysql_real_escape_string ($queryString, $this->link);
 			$this->lastQuery=mysql_query($queryString, $this->link);
 			$this->queryNum++;
 			if(!$this->lastQuery)
@@ -237,13 +257,26 @@ class alien_mysql implements alien_db
 				$this->error();
 			}
 		}
-		return $this->lastQuery;
+		return new mysql_result($this->lastQuery, $this->usemysqli);
 	} 
+	
+	public function processDump($filePath)
+	{
+		
+	}
+	
+	public function dumpTables($tables, $includeData)
+	{
+		
+	}
 	
 	public function setFetchMode($mode)
 	{
-		/* TODO: Add some checks */
-		$this->fetchMode=$mode;
+		if(in_array($mode, $this->fetchModes))
+		{
+			$this->fetchMode=$mode;
+			return true;
+		} else return false;
 	}
 	
 	public function getNumRows()
@@ -264,11 +297,14 @@ class alien_mysql implements alien_db
 	
 	public function fetchAll()
 	{
-		for($i=0;$i<$this->getNumRows();++$i)
+		if(0!=$this->getNumRows())
 		{
-			$result[] = $this->fetchOne();
-		}
-		return $result;
+			for($i=0;$i<$this->getNumRows();++$i)
+			{
+				$result[] = $this->fetchOne();
+			}
+			return $result;
+		} else return array();
 	}
 	
 	public function fetchOne()
@@ -305,7 +341,6 @@ class alien_mysql implements alien_db
 				$result=null;
 				break;
 			}
-			//$this->error();
 			return $result;
 		} else
 		{	
@@ -339,7 +374,6 @@ class alien_mysql implements alien_db
 				$result=null;
 				break;
 			}
-			//$this->error();
 			return $result;
 		}
 	}
@@ -382,7 +416,7 @@ class alien_mysql implements alien_db
 	
 	public function __destruct()
 	{
-		
+		//
 	}
 	
 }

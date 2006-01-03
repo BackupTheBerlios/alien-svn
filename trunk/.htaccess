@@ -1,11 +1,14 @@
-RewriteEngine On
-
 ErrorDocument 400 /400
 ErrorDocument 401 /401
 ErrorDocument 403 /403
 ErrorDocument 404 /404
 ErrorDocument 500 /500
 
+<IfModule mod_rewrite.c>
+RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*) /index.php
+RewriteRule ^(.*) /index.php?q=$1
+</IfModule>
+
+php_value register_globals 0

@@ -8,7 +8,7 @@ class alien_errorpage
 		if(true)
 		{
 			echo 'You tried to access \''.$_SERVER['REQUEST_URI'].'\', ';
-			echo 'but Alien says: <font color=red>403: Access denied.</font> So, go to hell, please.';
+			echo 'but Alien says: <font color=red>'.$_SERVER['REDIRECT_STATUS'].'</font> So, go to hell, please.';
 			die();
 		}
 	}

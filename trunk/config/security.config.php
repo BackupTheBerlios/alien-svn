@@ -1,0 +1,10 @@
+<?PHP
+
+define('__ALIEN_SECURITY_FILTER', true);
+define('__ALIEN_SECURITY_FORCETYPING', true);
+define('__ALIEN_SECURITY_REGISERGLOBALS', false);
+define('__ALIEN_SECURITY_DISABLEFUNCTIONS', true);
+define('__ALIEN_SECURITY_FILTERSQL', true);
+define('__ALIEN_SECURITY_FILTERJAVASCRIPT', true);
+
+?>

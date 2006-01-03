@@ -28,18 +28,21 @@ define('__ALIEN_TABLEPREFIX', 'alien_');
 	Number of the port where a database server is running. Change it only if you
    can not connect to database, but you are sure that all other database options
    are correct
-	
+*/	
 define('__ALIEN_DBPORT', '2669');
-*/
+
 /* Please, set to FALSE on production */
 define('__ALIEN_DEBUG', TRUE);
+define('__ALIEN_ENABLECACHE', TRUE);
 define('__ALIEN_DBCODEPAGE', 'cp1251');
 define('__ALIEN_ERRORLEVEL', 'E_ALL');
 define('__ALIEN_PATH', 'E:/WebServers/home/alien.com/www/');
-define('__ALIEN_LIBDIR', __ALIEN_PATH.'libs/');
+define('__ALIEN_LIBSDIR', __ALIEN_PATH.'libs/');
 define('__ALIEN_SYSTEMDIR', __ALIEN_PATH.'system/');
+define('__ALIEN_TEMPLATESDIR', __ALIEN_PATH.'templates/');
+define('__ALIEN_SYSTEMLIBSDIR', __ALIEN_SYSTEMDIR.'/libs/');
 define('__ALIEN_PLUGINSDIR', __ALIEN_PATH.'plugins/');
-define('__ALIEN_INTERFACESDIR', __ALIEN_PATH.'interfaces/');
+define('__ALIEN_INTERFACESDIR', __ALIEN_SYSTEMDIR.'interfaces/');
 define('__ALIEN_LANGSDIR', __ALIEN_PATH.'langs/');
 define('__ALIEN_DATADIR', __ALIEN_PATH.'data/');
 define('__ALIEN_SESSPATH', __ALIEN_DATADIR.'sessions/');

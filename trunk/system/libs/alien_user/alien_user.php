@@ -6,14 +6,23 @@ class alien_user //implements alien_user
 	{
 		session_set_save_handler(array(& $this, 'open'), array(& $this, 'close'), array(& $this, 'read'), array(& $this, 'write'), array(& $this, 'destroy'), array(& $this, 'gc'));
 		session_start();
-		session_register('aaa', 'bbb');
+		$this->start();
 	}
 	
-	private function read($id) 
+	
+	function start()
 	{
-		$sess_file = __ALIEN_SESSPATH."sess_$id";
+		if(isset($_POST['uname'])&&$_POST['password']&&$_POST['password']=='iamnotageek!')
+		{
+			echo 'Welcome,'.$uname;
+		}
+	}
+	
+	function read($id) 
+	{
+		$sess_file = __ALIEN_SESSPATH."/sess_$id";
 		if ($fp = @fopen($sess_file, "r")) {
-			$sess_data = fread($fp, filesize($sess_file));
+			$sess_data = @fread($fp, filesize($sess_file));
 			return($sess_data);
 		} else {
 			return(""); // Must return "" here.
@@ -22,7 +31,7 @@ class alien_user //implements alien_user
 	
 	function write($id, $sess_data) 
 	{
-		$sess_file = __ALIEN_SESSPATH."sess_$id";
+		$sess_file = __ALIEN_SESSPATH."/sess_$id";
 		if ($fp = @fopen($sess_file, "w")) {
 			return(fwrite($fp, $sess_data));
 		} else {
@@ -43,13 +52,21 @@ class alien_user //implements alien_user
 	
 	function destroy($id) 
 	{
-		$sess_file = __ALIEN_SESSPATH."sess_$id";
+		$sess_file = __ALIEN_SESSPATH."/sess_$id";
 		return(@unlink($sess_file));
 	}
 
 	
-	private function gc($maxlifetime) 
+	function gc($maxlifetime) 
 	{
+		echo $maxlifetime;
+		foreach (glob(__ALIEN_SESSPATH."/sess_*") as $filename) 
+		{
+   			if(time() - filemtime($filename)>$maxlifetime)
+   			{
+   				@unlink($filename);
+   			}
+		}
 		return true;
 	}
 }

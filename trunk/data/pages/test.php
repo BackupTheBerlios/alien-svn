@@ -1,5 +1,5 @@
-<?
+<?PHP
 
-$queue = array('test');
+$queue = array('test', 'quote');
 	
 ?>

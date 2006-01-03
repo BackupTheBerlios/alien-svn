@@ -3,27 +3,48 @@
 class alien_news
 {
 
-	var $system;
+	private $system;
 	
 	public function __construct(&$system)
 	{
-		echo "<h1 align=center>Alien Times</h1>";
-		$this->system = &$system;
-		if(!isset($system->request[1]) || empty($system->request[1]) || !is_numeric($system->request[1])){
-$system->db->query('SELECT alien_news.news_id, alien_news.news_title, alien_news.news_text, alien_news.news_date, alien_users.user_name FROM alien_news,alien_users WHERE alien_news.news_author = alien_users.user_id ORDER BY alien_news.news_date DESC');
-	} else $this->getNewsById($system->request[1]);
-foreach($system->db->fetchAll() as $k=>$v)
+		$this->system = $system;
+		switch(is_numeric($system->request[0]))
+		{
+			case true:
+			switch(@$system->request[1])
+			{
+				case 'print':
+				$system->view->loadPageTemplate('news_print');
+				return $this->getNewsById($system->request[0]);
+				default:
+				$result= $this->getNewsById($system->request[0]);
+				break;
+			}
+			case false:
+			switch(@$system->request[1])
+			{
+				case 'date':
+				$date = @$system->request[1];
+				return $this->getNewsByDate($date);
+				default:
+				break;
+			}
+		}
+		if(!isset($system->request[0]) || empty($system->request[0]) || !is_numeric($system->request[0])){
+$result = $system->db->query('SELECT alien_news.news_id, alien_news.news_title, alien_news.news_author, alien_news.news_text, alien_news.news_date, alien_users.user_name FROM alien_news,alien_users WHERE alien_news.news_author = alien_users.user_id ORDER BY alien_news.news_date DESC');
+	} else $result = $this->getNewsById($system->request[0]);
+	//ob_start();
+	echo "<pre>";
+foreach($result->fetchAll() as $k=>$v)
 {
-	echo "#".$v['news_id']." <b>".$v['news_title']."</b>";
-	echo "<p>".$v['news_text']."</p>";
-	echo "<i>Author: ".$v['user_name']." Date: ".$v['news_date']."</i><BR /><BR />";
+	print_r($v);
 }
-
+    echo "</pre>";
 	}
 	
 	private function getNewsById($id)
 	{
-		$this->system->db->query('SELECT alien_news.news_id, alien_news.news_title, alien_news.news_text, alien_news.news_date, alien_users.user_name FROM alien_news,alien_users WHERE alien_news.news_author = alien_users.user_id AND alien_news.news_id = '.$id);
+		return $this->system->db->query('SELECT alien_news.news_id, alien_news.news_title, alien_news.news_text, alien_news.news_date, alien_users.user_name FROM alien_news,alien_users WHERE alien_news.news_author = alien_users.user_id AND alien_news.news_id = '.$id);
 	}
 	
 	private function getNewsByDate()

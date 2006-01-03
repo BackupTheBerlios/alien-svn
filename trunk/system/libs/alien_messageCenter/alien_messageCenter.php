@@ -5,8 +5,8 @@
 
 class alien_messageCenter //implements alien_error
 {
-	var $lastMessage;
-	var $errorType = E_ALL;
+	public $lastMessage;
+	public $errorType = E_ALL;
 	/*
 	 	The constructor of this class. If you don't understand
 	 	what it is, close this file immediately :-)

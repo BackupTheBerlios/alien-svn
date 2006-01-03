@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="windows-1251" ?>
-<news_item>
-<title>#<phpvar>news_id</phpvar> <phpvar>news_title</phpvar></title>
-<text><phpvar>news_text</phpvar></text>
-<infobar>Автор: <link href="phpvar:user_link:phpvar"><phpvar>user_name</phpvar></link> Дата: <phpvar>news_date</phpvar> <link href="phpvar:print_link:phpvar"><img src="/templates/alien/images/print_16.png" border="0" /></link> <link href="phpvar:friend_link:phpvar"><img src="/templates/alien/images/mail_16.png" border="0" /></link></infobar>
-</news_item>
